@@ -19,12 +19,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //수중 배경 관련
-    private int m_i_bubbleMax = 13;//최대 생성할 버블 개수    
+    public enum Scene   //각 함수 및 변수를 씬별로 호출할 수 있도록 하는 함수(State와 유사) - YSG
+    {
+        UnderSea=0,
+        Island,
+        Lab,
+    }
+
+    public Scene scene;    //enum함수에 접근하는 겸 현재 씬을 표시하는 변수
+  
+
+
+    //수중 배경(UnderSea) 관련--------------------------------------------------------------------------------
+
+
+    [Header("수중도시 관련")]
+
+
+
     [SerializeField]
     private GameObject m_G_bubble; //버블 프리팹   
+
     [SerializeField]
     private GameObject m_G_bubbleParents; //버플 프리팹이 생성될 부모 폴더
+
+    private int m_i_bubbleMax = 13;//최대 생성할 버블 개수
 
     private void Start()
     {
@@ -35,7 +54,11 @@ public class GameManager : MonoBehaviour
     //Start에서 실행될 매니저 함수 묶음
     void Init()
     {
-        makin_Bubble();
+        if (scene == Scene.UnderSea)
+        {
+            makin_Bubble();
+        }
+
     }
 
     //수중 물거품 랜덤 위치 생성
@@ -50,5 +73,4 @@ public class GameManager : MonoBehaviour
             b.transform.parent = m_G_bubbleParents.transform;
         } 
     }
-
 }
