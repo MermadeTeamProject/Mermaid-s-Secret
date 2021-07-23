@@ -56,6 +56,7 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\02.Scripts\Common\ItemInfo.cs" />
     <Compile Include="Assets\07.Tools\Common\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\08.Assets\KKH\Particle Ribbon by Moonflower Carnivore\Scripts\randomParticleRotation.cs" />
     <Compile Include="Assets\02.Scripts\Common\Memo.cs" />
@@ -69,19 +70,18 @@
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterTile.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\SpecularLighting.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterBase.cs" />
+    <Compile Include="Assets\02.Scripts\Common\ItemEnum.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\MeshContainer.cs" />
     <Compile Include="Assets\02.Scripts\KKH\WaterCtrl.cs" />
     <Compile Include="Assets\08.Assets\BJY\Assets_\_Barking_Dog\Common Scripts\Turn_Move.cs" />
     <Compile Include="Assets\08.Assets\KKH\Particle Ribbon by Moonflower Carnivore\Scripts\ReverseNormals.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\GerstnerDisplace.cs" />
+    <Compile Include="Assets\02.Scripts\BJY\DoorScr.cs" />
     <Compile Include="Assets\02.Scripts\Common\GameManager.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\Water.cs" />
     <Compile Include="Assets\08.Assets\BJY\Assets_\_Barking_Dog\Common Scripts\MouseLook.cs" />
     <Compile Include="Assets\02.Scripts\KKH\PlayeCtrl.cs" />
     <Compile Include="Assets\02.Scripts\YSG\PlayerCtrl.cs" />
-    <Compile Include="Assets\02.Scripts\Common\ItemInfo.cs" />
-    <Compile Include="Assets\02.Scripts\Common\ItemEnum.cs" />
-    <Compile Include="Assets\02.Scripts\BJY\DoorScr.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\08.Assets\KKH\Jiggly Bubble Free\Shaders\Particle Alpha Blended Cubemap.shader" />
@@ -674,11 +674,17 @@
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
+      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AddOns.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
@@ -688,6 +694,12 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder">
+      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
@@ -700,18 +712,6 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AddOns.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
