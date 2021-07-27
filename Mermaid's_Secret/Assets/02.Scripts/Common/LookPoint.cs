@@ -38,21 +38,10 @@ public class LookPoint : MonoBehaviour
             case Type.Password:
                 if (!m_b_closePW)
                 {
-                    StartCoroutine(openPwPanel());
-                    m_G_pwPanel.SetActive(true);
+                   m_G_pwPanel.SetActive(true);
                    PlayerCtrl.m_b_canMove = false;
                 }
                 break;
-        }
-    }
-
-    // ↓ 패스워드 UI 패널 열리는 연출용 코루틴
-    IEnumerator openPwPanel()
-    {
-        for (float a = 0f; a >= 1.1f; a += 0.1f)
-        {
-            m_G_pwPanel.transform.localScale = new Vector3(m_G_pwPanel.transform.localScale.x, a, m_G_pwPanel.transform.localScale.z);
-            yield return new WaitForSeconds(0.01f);
         }
     }
 

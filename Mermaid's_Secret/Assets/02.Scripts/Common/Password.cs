@@ -7,7 +7,7 @@ using TMPro;
 public class Password : MonoBehaviour
 { //해당 스크립트는 Inputfield(TMP)에 집어넣을 것
     [SerializeField] private LookPoint m_G_thisLookPoint;  //해당 UI 패널에 연결되어 있는 lookPoint 오브젝트(lookPoint 오브젝트에 상호작용 시 이 UI가 표시됨)
-    [SerializeField] private GameObject m_G_pwPanel;    //패스워트 UI 패널
+    [SerializeField] private GameObject m_G_pwPanel;    //패스워드 UI 패널
     [SerializeField] private Button m_B_access;         //Access 버튼 UI 
     [SerializeField] private Text m_T_guide;            //안내 텍스트
 
@@ -19,13 +19,16 @@ public class Password : MonoBehaviour
         m_TMP_inputField = GetComponent<TMP_InputField>();
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(openPwPanel());
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
-        { 
-            m_G_pwPanel.SetActive(false);
-            PlayerCtrl.m_b_canMove = true;  //플레이어의 이동 제한을 해제
-            m_G_thisLookPoint.m_b_closePW = true;   ////패스워드 UI 패널 닫기 용 변수를 true로 변경
+        {
+            StartCoroutine(close_());
         }
     }
 
@@ -70,10 +73,9 @@ public class Password : MonoBehaviour
         }
     }
 
-
     IEnumerator openPwPanel()
     {
-        for (float a = 0f; a >= 1.1f; a += 0.1f)
+        for (float a = 0f; a <= 1.1f; a += 0.1f)
         {
             m_G_pwPanel.transform.localScale = new Vector3(m_G_pwPanel.transform.localScale.x, a, m_G_pwPanel.transform.localScale.z);
             yield return new WaitForSeconds(0.01f);
@@ -88,4 +90,13 @@ public class Password : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
+
+    IEnumerator close_()
+    {
+        yield return StartCoroutine(closePwPanel());
+        m_G_pwPanel.SetActive(false);
+        PlayerCtrl.m_b_canMove = true;  //플레이어의 이동 제한을 해제
+        m_G_thisLookPoint.m_b_closePW = true;   ////패스워드 UI 패널 닫기 용 변수를 true로 변경
+    }
+
 }

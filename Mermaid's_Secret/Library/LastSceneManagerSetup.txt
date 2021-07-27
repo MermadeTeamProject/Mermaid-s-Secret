@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/01.Scenes/BJY/MainScene.unity
+- path: Assets/01.Scenes/YSG/Island_20210727.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

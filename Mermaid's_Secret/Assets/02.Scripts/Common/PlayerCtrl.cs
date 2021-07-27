@@ -31,7 +31,6 @@ public class PlayerCtrl : MonoBehaviour
     // ↓ 기타 조작 관련
     GameObject G_Item;   //아이템 태그가 붙은 오브젝트를 관리하는 변수
     private bool m_b_ItemRay;    //아이템에 마우스가 올라가 있는지 확인하는 변수
-    private bool m_b_doneLook = false;    //조사하기 커맨드가 완료되었는지 확인하는 변수
 
 
     void Start()
@@ -246,7 +245,6 @@ public class PlayerCtrl : MonoBehaviour
             if (m_I_ButtonGage.fillAmount >= 0.99)
             {
                 m_G_ButtonPanel.SetActive(false);
-
                 other.gameObject.GetComponent<LookPoint>().Action(other);
             }
         }
