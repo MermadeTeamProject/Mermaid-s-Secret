@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        //string str = "abc defg";
+        //print(str.Replace(" ", ""));
         Init();
         //ItemManager.instance.Init();
     }

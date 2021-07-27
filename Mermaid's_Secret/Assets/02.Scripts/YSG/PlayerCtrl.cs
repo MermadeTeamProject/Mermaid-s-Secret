@@ -14,18 +14,20 @@ public class PlayerCtrl : MonoBehaviour
     [Header("조사하기 커맨드 관련")]
     private Component m_G_lookObject;  //조사하기 실행 시 표시할 오브젝트
 
-    //이동 조작 관련
+    // ↓ 이동 조작 관련
     CharacterController C_chaCtrl;
     Vector3 V3_moveDir = Vector3.zero;
+    [SerializeField] CapsuleCollider secondCollider;
+    public static bool m_b_canMove=true;
 
     private float m_f_moveSpeed=3f;
     private float m_f_r;
 
-    //애니메이션 관련
+    // ↓ 애니메이션 관련
     Animator A_animator;
 
-    //기타 조작 관련
-    GameObject obj_Item;   //아이템 태그가 붙은 오브젝트를 관리하는 변수
+    // ↓ 기타 조작 관련
+    GameObject G_Item;   //아이템 태그가 붙은 오브젝트를 관리하는 변수
     private bool m_b_ItemRay;    //아이템에 마우스가 올라가 있는지 확인하는 변수
     private bool m_b_doneLook=false;    //조사하기 커맨드가 완료되었는지 확인하는 변수
     
@@ -35,7 +37,7 @@ public class PlayerCtrl : MonoBehaviour
         Init();
     }
 
-    //Start 함수에서 실행할 내용들
+    // ↓ Start 함수에서 실행할 내용들
     void Init()
     {
         C_chaCtrl = GetComponent<CharacterController>();
@@ -44,12 +46,16 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
-        Move();
-        Ani();
-        if (obj_Item != null)
-        {
+        if (!m_b_canMove)
+            C_chaCtrl.SimpleMove(Vector3.zero);
+        
+        else
+            Move();
+            Ani();
+
+        if (G_Item != null)
             GetItem();
-        }
+
     }
 
     void FixedUpdate()
@@ -59,7 +65,7 @@ public class PlayerCtrl : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        LookInto(other);
+        LookPoint(other);
     }
 
     private void OnTriggerExit(Collider other)
@@ -68,7 +74,7 @@ public class PlayerCtrl : MonoBehaviour
     }
 
 
-    //플레이어 이동 조작 함수
+    // ↓ 플레이어 이동 조작 함수
     void Move()
     {
         m_f_r = Input.GetAxisRaw("Mouse X");
@@ -85,7 +91,7 @@ public class PlayerCtrl : MonoBehaviour
 
     }
 
-    //플레이어 애니메이션 함수
+    // ↓ 플레이어 애니메이션 함수
     void Ani()
     {
         if (C_chaCtrl.isGrounded)
@@ -119,24 +125,24 @@ public class PlayerCtrl : MonoBehaviour
 
 
 
-    //상호작용 가능한 오브젝트 OutLine 관리 함수
+    // ↓ 상호작용 가능한 오브젝트 OutLine 관리 함수
     void ItemRaycast()
     {
         RaycastHit hit = new RaycastHit();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if(Physics.Raycast(ray.origin,ray.direction,out hit,50f))
+        if(Physics.Raycast(ray.origin,ray.direction,out hit,20f))
         {
             if(hit.transform.gameObject.CompareTag("Item")|| hit.transform.gameObject.CompareTag("DelayItem"))
             {
-                obj_Item = hit.transform.gameObject;
-                obj_Item.GetComponent<Outline>().enabled = true;
+                G_Item = hit.transform.gameObject;
+                G_Item.GetComponent<Outline>().enabled = true;
                 m_b_ItemRay = true;
             }
             else
             {
-                if (obj_Item != null)
+                if (G_Item != null)
                 {
-                    obj_Item.GetComponent<Outline>().enabled = false;
+                    G_Item.GetComponent<Outline>().enabled = false;
                     m_b_ItemRay = false;
                 }
                 return;
@@ -144,23 +150,23 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    //아이템 획득 조작 함수
+    // ↓ 아이템 획득 조작 함수
     void GetItem()
     {
-        float distance = Vector3.Distance(obj_Item.transform.position, transform.position);
+        float distance = Vector3.Distance(G_Item.transform.position, transform.position);
 
         if (m_b_ItemRay && distance<=3f)   //아이템에 마우스가 올라가 있고 아이템과 플레이어간의 거리가 3f 이내일 때
         {
             m_T_CommandText.text = "획득";
             m_G_ButtonPanel.SetActive(true);    //키 조작 안내 UI ON
 
-            if (Input.GetKey(KeyCode.E) && obj_Item.CompareTag("DelayItem"))
+            if (Input.GetKey(KeyCode.E) && G_Item.CompareTag("DelayItem"))    //딜레이를 가진 아이템 획득 시
             {
                 ButtonGage(1);
             }
-            else if (Input.GetKeyDown(KeyCode.E) && obj_Item.CompareTag("Item"))
+            else if (Input.GetKeyDown(KeyCode.E) && G_Item.CompareTag("Item"))    //일반 아이템 획득 시
             {
-                obj_Item.SetActive(false);
+                G_Item.SetActive(false);
             }
             else
             {
@@ -170,25 +176,27 @@ public class PlayerCtrl : MonoBehaviour
         else if (m_b_ItemRay && distance > 3f)
         {
             m_G_ButtonPanel.SetActive(false);   //키 조작 안내 UI OFF
-            m_I_ButtonGage.fillAmount = 0;
+            m_I_ButtonGage.fillAmount = 0;      //게이지의 수치를 0으로 초기화
         }
         else
         {
             m_G_ButtonPanel.SetActive(false);
             m_I_ButtonGage.fillAmount = 0;
-            obj_Item = null;
+            G_Item = null;
         }
     }
 
-    //딜레이 UI 게이지 조정 및 커맨드 함수들
+    // ↓ 딜레이 UI 게이지 조정 및 커맨드 함수들
     void ButtonGage(int a)
     {
         float t;
 
         if (m_I_ButtonGage.fillAmount >= 0.8)
-            t = Time.deltaTime * 6;
+          t = Time.deltaTime * 6;
+
         else
-        t = Time.deltaTime;
+          t = Time.deltaTime;
+
 
         switch (a) 
         {
@@ -196,19 +204,19 @@ public class PlayerCtrl : MonoBehaviour
                 m_I_ButtonGage.fillAmount = Mathf.Lerp(m_I_ButtonGage.fillAmount, 0, t);
                 break;
 
-            case 1: //아이템 딜레이 획득
+            case 1: //딜레이를 가진 아이템 획득 시
                 m_I_ButtonGage.fillAmount = Mathf.Lerp(m_I_ButtonGage.fillAmount, 1, t);
 
                 if (m_I_ButtonGage.fillAmount >= 0.99)
                 {
                     m_G_ButtonPanel.SetActive(false);
-                    m_I_ButtonGage.fillAmount = 0; 
-                    obj_Item.SetActive(false);
-                    obj_Item = null;
+                    m_I_ButtonGage.fillAmount = 0;
+                    G_Item.SetActive(false);
+                    G_Item = null;
                 }
                 break;
 
-            case 2: //조사하기 커맨드
+            case 2: //조사하기 커맨드 실행 시 
                 m_I_ButtonGage.fillAmount = Mathf.Lerp(m_I_ButtonGage.fillAmount, 1, t);
 
                 break;
@@ -217,8 +225,8 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    //조사하기 함수 (OnCollisionStay 함수에 넣을 것)
-    void LookInto(Collider other)
+    // ↓ 조사하기 함수 (OnCollisionStay 함수에 넣을 것)
+    void LookPoint(Collider other)
     {
         if (other.CompareTag("LookPoint"))  //플레이어가 조사 영역 내에 있을 때 
         {
@@ -237,17 +245,13 @@ public class PlayerCtrl : MonoBehaviour
             if (m_I_ButtonGage.fillAmount >= 0.99)
             {
                 m_G_ButtonPanel.SetActive(false);
-                m_G_lookObject = other.GetComponentInChildren(typeof(Renderer));
-                float bridgeMatA = m_G_lookObject.GetComponent<Renderer>().material.color.a;
 
-                m_G_lookObject.GetComponent<Renderer>().material.color
-                    = new Color(1, 1, 1, Mathf.Lerp(bridgeMatA, 70 / 255f, Time.deltaTime));
-                m_b_doneLook = true;
+                other.gameObject.GetComponent<LookPoint>().Action(other);
             }
         }
     }
 
-    //조사 영역을 벗어났을 때의 함수(OnCollisionExit 함수에 넣을 것)
+    // ↓ 조사 영역을 벗어났을 때의 함수(OnCollisionExit 함수에 넣을 것)
     void OutLookArea(Collider other)
     {
         if (other.CompareTag("LookPoint"))
@@ -255,9 +259,10 @@ public class PlayerCtrl : MonoBehaviour
             m_G_ButtonPanel.SetActive(false);
             m_I_ButtonGage.fillAmount = 0;
 
-            if (m_b_doneLook)
+            if (other.gameObject.GetComponent<LookPoint>().m_b_doneLook)
             {
-                other.gameObject.GetComponent<BoxCollider>().enabled = false;  //조사가 끝났을 시 조사영역 off(조사가 끝났는데도 조사 버튼이 계속 뜨는 걸 방지) 
+                // ↓ 조사가 끝났을 시 조사영역 off(조사가 끝났는데도 조사 버튼이 계속 뜨는 걸 방지) 
+                other.gameObject.GetComponent<BoxCollider>().enabled = false;  
             }
         }
     }
