@@ -1,41 +1,62 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorScr : MonoBehaviour
 {
     //20210723 Door 문 여닫이 처리 X
-   
-    Animator animator;
+
+    Animator A_animator;
 
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-        
+        A_animator = GetComponent<Animator>(); //문 애니메이터 불러옴
     }
 
-    void Update()
+    private void OnCollisionEnter(Collision collision) //플레이어가 문에 닿이면 문이 열린다
     {
-       
-    }
-
-   
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player")
-        {           
-            animator.SetBool("IsOpen", true);
-        }
-    }
-
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
+        print("충돌");
+        if (collision.gameObject.tag == "Player")
         {
-            animator.SetBool("IsOpen", false);
+            A_animator.SetBool("IsOpen", true);
         }
     }
+    private void OnTriggerEnter(Collider other) //플레이어가 문에 닿이면 문이 열린다
+    {
+        print("트리거 충돌");
+        if (other.gameObject.tag == "Player")
+        {
+            A_animator.SetBool("IsOpen", true);
+        }
+    }
+
+    void OnCollisionExit(Collision collision)//플레이어가 문에서 멀어지면 문이 닫힌다
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            A_animator.SetBool("IsOpen", false);
+            //this.GetComponent<Collision>().enabled = true;
+        }
+    }
+
+    void OnTriggerExit(Collider collision)//플레이어가 문에서 멀어지면 문이 닫힌다
+    {
+        print("트리거 충돌");
+        if (collision.gameObject.tag == "Player")
+        {
+            A_animator.SetBool("IsOpen", false);
+            //this.GetComponent<Collision>().enabled = true;
+        }
+    }
+
+
 
 }
+
+
+
+
+
+
+
+
+
