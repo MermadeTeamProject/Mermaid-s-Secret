@@ -27,6 +27,8 @@ public class PlayerCtrl : MonoBehaviour
 
     // ↓ 애니메이션 관련
     Animator A_animator;
+    private bool m_b_isAttacking;
+    [SerializeField] private BoxCollider m_B_weapon;
 
     // ↓ 기타 조작 관련
     GameObject G_Item;   //아이템 태그가 붙은 오브젝트를 관리하는 변수
@@ -48,10 +50,11 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
-        if (!m_b_canMove)
+        if (!m_b_canMove|| m_b_isAttacking)
             C_chaCtrl.SimpleMove(Vector3.zero);
         else
-            IslandMove();
+            Move();
+
         Ani();
 
         if (G_Item != null)
@@ -75,7 +78,7 @@ public class PlayerCtrl : MonoBehaviour
 
 
     // ↓ 섬 맵 플레이어 이동 조작 함수
-    void IslandMove()
+    void Move()
     {
         m_f_r = Input.GetAxisRaw("Mouse X");
 
@@ -99,22 +102,25 @@ public class PlayerCtrl : MonoBehaviour
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
 
-            if ((h != 0 || v != 0) && Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.F))
+            {  //공격 모션
+                m_b_isAttacking = true;
+                A_animator.SetTrigger("Attack");
+                m_B_weapon.tag = "PlayerWeapon";
+            }
+            else if (!m_b_isAttacking && (h != 0 || v != 0) && Input.GetKey(KeyCode.LeftShift))
             {  //달리기 모션
                 A_animator.SetBool("isWalk", false);
                 A_animator.SetBool("isRun", true);
                 m_f_moveSpeed = 6f;
             }
-            else if (h != 0 || v != 0)
+            else if (!m_b_isAttacking && (h != 0 || v != 0))
             {  //걷기 모션
                 A_animator.SetBool("isWalk", true);
                 A_animator.SetBool("isRun", false);
                 m_f_moveSpeed = 3f;
             }
-            else if (Input.GetKeyDown(KeyCode.F))
-            {  //공격 모션
-                A_animator.SetTrigger("Attack");
-            }
+            
             else
             {  //Idle
                 A_animator.SetBool("isWalk", false);
@@ -123,7 +129,21 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
+    void doneAttack()
+    {
+        m_b_isAttacking = false;
+        m_B_weapon.tag = "Untagged";
+    }
 
+    void enableAttackCollider()
+    {
+        m_B_weapon.enabled = true;
+    }
+
+    void disableWeaponCollider()
+    {
+        m_B_weapon.enabled = false;
+    }
 
     // ↓ 상호작용 가능한 오브젝트 OutLine 관리 함수
     void ItemRaycast()
