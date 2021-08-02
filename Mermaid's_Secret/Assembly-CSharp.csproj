@@ -59,7 +59,9 @@
     <Compile Include="Assets\02.Scripts\Common\ItemInfo.cs" />
     <Compile Include="Assets\07.Tools\Common\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\08.Assets\KKH\Particle Ribbon by Moonflower Carnivore\Scripts\randomParticleRotation.cs" />
+    <Compile Include="Assets\02.Scripts\BJY\MoveAgent.cs" />
     <Compile Include="Assets\02.Scripts\Common\Memo.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\Slot.cs" />
     <Compile Include="Assets\02.Scripts\BJY\SceneChange.cs" />
     <Compile Include="Assets\02.Scripts\YSG\WallColliderGenerator.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\Displace.cs" />
@@ -67,9 +69,9 @@
     <Compile Include="Assets\02.Scripts\BJY\EntranceSpotLightScr.cs" />
     <Compile Include="Assets\08.Assets\KKH\Particle Ribbon by Moonflower Carnivore\Scripts\rotation.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\PlanarReflection.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\Item_.cs" />
     <Compile Include="Assets\08.Assets\Common\Sci-Fi UI\Demo_Assets\scripts\GUI_Demo.cs" />
     <Compile Include="Assets\08.Assets\Common\Standard Assets\Environment\Water (Basic)\Scripts\WaterBasic.cs" />
-    <Compile Include="Assets\02.Scripts\Common\test.cs" />
     <Compile Include="Assets\01.Scenes\KKH\Memo.cs" />
     <Compile Include="Assets\02.Scripts\Common\ItemManager.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterTile.cs" />
@@ -78,19 +80,22 @@
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterBase.cs" />
     <Compile Include="Assets\02.Scripts\Common\ItemEnum.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\MeshContainer.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\Inventory.cs" />
     <Compile Include="Assets\02.Scripts\KKH\WaterCtrl.cs" />
     <Compile Include="Assets\08.Assets\BJY\Assets_\_Barking_Dog\Common Scripts\Turn_Move.cs" />
     <Compile Include="Assets\08.Assets\KKH\Particle Ribbon by Moonflower Carnivore\Scripts\ReverseNormals.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\GerstnerDisplace.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\pickUpItem.cs" />
     <Compile Include="Assets\02.Scripts\BJY\DoorScr.cs" />
     <Compile Include="Assets\02.Scripts\Common\GameManager.cs" />
+    <Compile Include="Assets\02.Scripts\BJY\EnemyCtrl.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\Water.cs" />
     <Compile Include="Assets\08.Assets\BJY\Assets_\_Barking_Dog\Common Scripts\MouseLook.cs" />
     <Compile Include="Assets\02.Scripts\KKH\PlayeCtrl.cs" />
     <Compile Include="Assets\02.Scripts\Common\Password.cs" />
     <Compile Include="Assets\02.Scripts\Common\PlayerCtrl.cs" />
-    <Compile Include="Assets\02.Scripts\BJY\MoveAgent.cs" />
-    <Compile Include="Assets\02.Scripts\BJY\EnemyCtrl.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\ItemEffectDatabase.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\PlayerAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

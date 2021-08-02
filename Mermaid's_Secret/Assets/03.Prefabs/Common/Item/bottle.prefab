@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 75699677451344275}
   - component: {fileID: 470143517324445124}
   - component: {fileID: 470143517324445125}
+  - component: {fileID: 244538682164417305}
   m_Layer: 0
   m_Name: bottle
   m_TagString: Item
@@ -66,6 +67,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &244538682164417305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740596776794915625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a614c26d069220647bcb426b481b89fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: f00fa9a9ab974454f9a482e135b94364, type: 2}
 --- !u!1 &2596531708582123886
 GameObject:
   m_ObjectHideFlags: 0
