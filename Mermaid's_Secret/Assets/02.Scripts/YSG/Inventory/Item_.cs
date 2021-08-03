@@ -17,5 +17,6 @@ public class Item_ : ScriptableObject
     public ItemType itemType;
     public Sprite itemImage;
     public GameObject itemPrefab;
+    public int maxCount;
 }
 

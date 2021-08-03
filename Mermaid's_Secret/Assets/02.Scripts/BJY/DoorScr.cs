@@ -14,7 +14,6 @@ public class DoorScr : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision) //플레이어가 문에 닿이면 문이 열린다
     {
-        print("충돌");
         if (collision.gameObject.tag == "Player")
         {
             A_animator.SetBool("IsOpen", true);
@@ -22,7 +21,6 @@ public class DoorScr : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other) //플레이어가 문에 닿이면 문이 열린다
     {
-        print("트리거 충돌");
         if (other.gameObject.tag == "Player")
         {
             A_animator.SetBool("IsOpen", true);
@@ -40,7 +38,6 @@ public class DoorScr : MonoBehaviour
 
     void OnTriggerExit(Collider collision)//플레이어가 문에서 멀어지면 문이 닫힌다
     {
-        print("트리거 충돌");
         if (collision.gameObject.tag == "Player")
         {
             A_animator.SetBool("IsOpen", false);

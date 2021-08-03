@@ -75,6 +75,7 @@
     <Compile Include="Assets\01.Scenes\KKH\Memo.cs" />
     <Compile Include="Assets\02.Scripts\Common\ItemManager.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterTile.cs" />
+    <Compile Include="Assets\02.Scripts\YSG\Inventory\ItemEffectDatabase.cs" />
     <Compile Include="Assets\02.Scripts\Common\LookPoint.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\SpecularLighting.cs" />
     <Compile Include="Assets\08.Assets\Common\Water\Scripts\WaterBase.cs" />
@@ -94,8 +95,7 @@
     <Compile Include="Assets\02.Scripts\KKH\PlayeCtrl.cs" />
     <Compile Include="Assets\02.Scripts\Common\Password.cs" />
     <Compile Include="Assets\02.Scripts\Common\PlayerCtrl.cs" />
-    <Compile Include="Assets\02.Scripts\YSG\Inventory\ItemEffectDatabase.cs" />
-    <Compile Include="Assets\02.Scripts\YSG\PlayerAction.cs" />
+    <Compile Include="Assets\02.Scripts\Common\PlayerAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

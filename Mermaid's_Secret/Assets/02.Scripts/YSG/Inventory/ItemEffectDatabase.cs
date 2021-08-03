@@ -50,21 +50,13 @@ public class ItemEffectDatabase : MonoBehaviour
                     }
                     print(_item.itemName + "을 사용했습니다.");
                 }
+                else
+                    print("ItemEffectDatabase에 일치하는 itemName이 없습니다.");
             }
             return;
         }
-        else
-        print("ItemEffectDatabase에 일치하는 itemName이 없습니다.");
-    }
-
-
-    void Start()
-    {
         
     }
 
-    void Update()
-    {
-        
-    }
+
 }

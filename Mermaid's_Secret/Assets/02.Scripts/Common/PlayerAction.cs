@@ -10,16 +10,14 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private Text m_T_CommandText;
     [SerializeField] private Image m_I_ButtonGage;
 
+    [Header("조사하기 관련")]
+    private bool m_b_inLookPoint;   //플레이어가 현재 조사하기 영역 내에 있는지를 판단하기 위한 변수
 
     [Header("인벤토리 관련")]
     [SerializeField] private Inventory m_I_inventory;
     GameObject G_Item;   //아이템 태그가 붙은 오브젝트를 관리하는 변수
     private bool m_b_ItemRay;    //아이템에 마우스가 올라가 있는지 확인하는 변수
 
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
@@ -27,7 +25,7 @@ public class PlayerAction : MonoBehaviour
         {
             GetItem();
         }
-        else
+        else if (!m_b_inLookPoint && G_Item == null)
         {
             m_G_ButtonPanel.SetActive(false);
         }
@@ -91,9 +89,12 @@ public class PlayerAction : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.E) && G_Item.CompareTag("Item"))    //일반 아이템 획득 시
             {
-                m_I_inventory.getItem(G_Item.GetComponent<pickUpItem>().item);
-                Destroy(G_Item);
-                G_Item = null;
+                StartCoroutine(m_I_inventory.getItem(G_Item.GetComponent<pickUpItem>().item));
+                if (m_I_inventory.m_b_canGet)
+                {
+                    Destroy(G_Item);
+                    G_Item = null;
+                }
             }
             else
             {
@@ -158,6 +159,7 @@ public class PlayerAction : MonoBehaviour
     {
         if (other.CompareTag("LookPoint"))  //플레이어가 조사 영역 내에 있을 때 
         {
+            m_b_inLookPoint = true;
             m_T_CommandText.text = "조사";
             m_G_ButtonPanel.SetActive(true);
 
@@ -183,6 +185,7 @@ public class PlayerAction : MonoBehaviour
     {
         if (other.CompareTag("LookPoint"))
         {
+            m_b_inLookPoint = false;
             m_G_ButtonPanel.SetActive(false);
             m_I_ButtonGage.fillAmount = 0;
 
