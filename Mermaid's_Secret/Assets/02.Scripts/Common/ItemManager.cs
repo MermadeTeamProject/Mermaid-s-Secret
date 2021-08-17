@@ -31,13 +31,18 @@ public class ItemManager : MonoBehaviour
     [Header("수중도시 맵 관련")]
 
     //아이템 관련
+    [Header("Prefabs numbers")]
     [SerializeField]
     private int m_i_branch = 20; //생성할 나무가지 개수
     [SerializeField]
     private int m_i_bottle = 20; //생성할 물병 개수
-                              
-    public GameObject[] m_G_branches; //나무가지 게임오브젝트 배열
+
+    static public List<GameObject> G_nearBottleArr = new List<GameObject>();
+    static public bool WasCreat = false;
+
+    [Header("Prefabs")]
     public GameObject m_G_bottle;//물병프리팹
+    [Header("Parents of Prefabs")]
     [SerializeField]
     private GameObject m_G_itemParents;//아이템 프리팹이 생성될 부모 폴더
 
@@ -69,7 +74,6 @@ public class ItemManager : MonoBehaviour
         switch (scene)
         {
             case Scene.UnderSea: //수중도시 씬
-                makinBranch();
                 makinBottle();
                 break;
 
@@ -81,24 +85,6 @@ public class ItemManager : MonoBehaviour
     }
 
     /*수중도시 맵 내 함수 --------------------------------------------------------------------------------------------주석 단 사람: YSG*/
-
-    //나무가지 랜덤 위치 생성
-    //계속 생기는 오브젝트는 아니니까 굳이 풀링을 쓸필요는 없을것 같다
-    void makinBranch()
-    {
-        GameObject tmp = m_G_branches[0];
-        for (int i = 0; i < m_i_branch; i++)
-        {
-            int rand = Random.Range(0, 2);
-            float ranX = Random.Range(50f, 120f);
-            float ranZ = Random.Range(30f, 110f);
-            m_G_branches[rand].transform.position = new Vector3(ranX, 1f, ranZ);
-            GameObject b = Instantiate(m_G_branches[rand]);
-            b.transform.parent = m_G_itemParents.transform;
-            //branch_List.Add(b);
-            //branch_List[i].
-        }
-    }
 
     //병 위치 랜덤생성
     void makinBottle()

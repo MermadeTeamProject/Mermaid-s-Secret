@@ -12,6 +12,7 @@ public class PlayerAction : MonoBehaviour
 
     [Header("조사하기 관련")]
     private bool m_b_inLookPoint;   //플레이어가 현재 조사하기 영역 내에 있는지를 판단하기 위한 변수
+    LookPoint m_L_lookPoint;
 
     [Header("인벤토리 관련")]
     [SerializeField] private Inventory m_I_inventory;
@@ -139,7 +140,7 @@ public class PlayerAction : MonoBehaviour
                 {
                     m_G_ButtonPanel.SetActive(false);
                     m_I_ButtonGage.fillAmount = 0;
-                    m_I_inventory.getItem(G_Item.GetComponent<pickUpItem>().item);
+                    StartCoroutine(m_I_inventory.getItem(G_Item.GetComponent<pickUpItem>().item));
                     Destroy(G_Item);
                     G_Item = null;
                 }
@@ -159,23 +160,42 @@ public class PlayerAction : MonoBehaviour
     {
         if (other.CompareTag("LookPoint"))  //플레이어가 조사 영역 내에 있을 때 
         {
-            m_b_inLookPoint = true;
-            m_T_CommandText.text = "조사";
-            m_G_ButtonPanel.SetActive(true);
+            m_L_lookPoint = other.gameObject.GetComponent<LookPoint>();
+            if (!m_L_lookPoint.m_b_look)
+            {
+                m_b_inLookPoint = true;
+                m_T_CommandText.text = "조사";
+                m_G_ButtonPanel.SetActive(true);
 
-            if (Input.GetKey(KeyCode.E))    //플레이어가 E버튼을 누르고 있을 때 
-            {
-                ButtonGage(2);
-            }
-            else if (m_I_ButtonGage.fillAmount < 0.98 && !Input.GetKey(KeyCode.E))
-            {
-                ButtonGage(0);
+                if (Input.GetKey(KeyCode.E))    //플레이어가 E버튼을 누르고 있을 때 
+                {
+                    ButtonGage(2);
+                }
+                else if (m_I_ButtonGage.fillAmount < 0.98 && !Input.GetKey(KeyCode.E))
+                {
+                    ButtonGage(0);
+                }
             }
 
-            if (m_I_ButtonGage.fillAmount >= 0.99)
+            if (m_I_ButtonGage.fillAmount >= 0.99)  //게이지가 0.99이상 차올랐을 시
             {
-                m_G_ButtonPanel.SetActive(false);
-                other.gameObject.GetComponent<LookPoint>().Action(other);
+                m_G_ButtonPanel.SetActive(false);   //버튼 안내 패널 비활성화
+                m_L_lookPoint.Action(other);    //조사 시 실행될 함수 호출
+            }
+
+            if (m_L_lookPoint.type == global::LookPoint.Type.Bridge && m_L_lookPoint.m_b_look && m_I_inventory.canSetBridge)
+            {   //다리 설치 조건: LookPoint의 타입이 Bridge 이고 조사하기를 마친 상태이며 통나무 아이템을 사용하고 있을 때
+                m_b_inLookPoint = true;
+                m_T_CommandText.text = "설치";
+                m_G_ButtonPanel.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {   //다리 설치하기(E키)를 눌렀을 때
+                    m_L_lookPoint.setBridge(other); //LookPoint 스크립트에서 다리의 머테리얼 및 트리거 설정 변경
+                    m_I_inventory.useWood();    //인벤토리 중 통나무를 가진 슬롯을 비워주고
+                    m_G_ButtonPanel.SetActive(false);   //커맨드 안내 UI 꺼주기
+                    m_L_lookPoint.m_b_doneLook = true;  //다리 조사하기 영역의 조사완료 여부 확인 변수 = true
+                }
             }
         }
     }
@@ -200,4 +220,5 @@ public class PlayerAction : MonoBehaviour
             }
         }
     }
+
 }

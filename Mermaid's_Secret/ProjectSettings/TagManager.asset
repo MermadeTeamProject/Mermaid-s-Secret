@@ -8,6 +8,7 @@ TagManager:
   - DelayItem
   - LookPoint
   - PlayerWeapon
+  - EnemyWeapon
   layers:
   - Default
   - TransparentFX

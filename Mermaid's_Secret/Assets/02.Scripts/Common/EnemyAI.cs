@@ -17,7 +17,7 @@ public class EnemyAI : MonoBehaviour
 
     public State state;
 
-    //==NevMesh 관련======================================================================
+    //==NevMesh 관련 변수======================================================================
 
     [SerializeField] Transform m_G_wayPointGroup;   //하이어라키에서 WayPoints를 담고 있는 부모 오브젝트
     [SerializeField] List<Transform> m_L_wayPoints; //WayPoint 위치를 저장할 리스트
@@ -31,7 +31,6 @@ public class EnemyAI : MonoBehaviour
     WaitForSeconds m_W_ws;
     Transform m_T_player;
 
-    private float m_f_rotateSpeed = 10f;    //추적 상태에서의 회전 속도
     private float m_f_walkSpeed = 2f;   //순찰 상태에서의 이동 속도
     readonly float m_f_traceSpeed = 5f; //추적 상태에서의 이동 속도
 
@@ -46,7 +45,12 @@ public class EnemyAI : MonoBehaviour
     readonly int hashDamaged = Animator.StringToHash("DAMAGED");
     readonly int hashDie = Animator.StringToHash("DIE");
 
+    //==Enemy 피격 관련====================================================================
 
+    private int m_i_hp = 30;
+
+    //==파라미터 ==========================================================================
+    #region
     private bool m_b_patrol;
     private bool Patrolling
     {
@@ -63,7 +67,6 @@ public class EnemyAI : MonoBehaviour
             if (m_b_patrol)   //m_b_walk = true일 시
             {
                 m_N_agent.speed = m_f_walkSpeed;
-                m_f_rotateSpeed = 10f;
 
                 //경로 변경 함수
                 WayTarget();
@@ -83,25 +86,23 @@ public class EnemyAI : MonoBehaviour
         {
             _target = value;
             m_N_agent.speed = m_f_traceSpeed;
-            m_f_rotateSpeed = 15f;
 
             //추적대상 지정 함수
             TraceTarget(_target);
         }
     }
+    #endregion
 
-    //====================================================================
-    //===일반 스탯 관련====================================================
-
-    private int m_i_hp = 3;
-
-
+    //==Unity 함수========================================================================
+    #region
     void Awake()
     {
         m_A_animator = GetComponent<Animator>();
 
         m_N_agent = GetComponent<NavMeshAgent>();
         m_i_nextIdx = Random.Range(0, m_L_wayPoints.Count);
+
+        m_N_agent.updateRotation = true;
 
         var playerObj = GameObject.FindGameObjectWithTag("Player");
         m_T_player = playerObj.GetComponent<Transform>();
@@ -114,33 +115,20 @@ public class EnemyAI : MonoBehaviour
 
     private void OnEnable()
     {
-        state = State.IDLE;
+        m_i_hp = 30;
+        m_b_isDie = false;
+        m_b_isDamaged = false;
+        m_b_isArrive = false;
+        state = State.WALK;
+        m_i_nextIdx = Random.Range(0, m_L_wayPoints.Count);
         StartCoroutine(StateCheck());
         StartCoroutine(Action());
     }
 
     void Update()
     {
-        if (m_i_hp <= 0)
-        {
-            m_b_isDie = true;
-        }
-
         if (!m_b_isDie)
         {
-            if (!m_N_agent.isStopped)   //걷는 상태일 때만 작동하도록 해주는 조건문. 걸으면서 회전하도록 조정 / updateRotation 기능 사용 시에는 스크립트로 조정하지 않음
-            {
-                if (state == State.TRACE)    //추적 상태일 시
-                {
-                    m_N_agent.updateRotation = false;
-                    Quaternion rot = Quaternion.LookRotation(m_N_agent.desiredVelocity);  // desiredVelocity: 다음 목적지로 향하는 속도
-                    transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * m_f_rotateSpeed);   //Slerp(기본 수치, 목표 수치, 얼마만큼 회전할건지(비율))
-                }
-                else
-                {
-                    m_N_agent.updateRotation = true;
-                }
-            }
 
             if (!m_b_patrol)  //enemy가 순찰상태가 아니라면
             {
@@ -154,24 +142,38 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+
     private void LateUpdate()
     {
         if (state == State.ATTACK)
         {
             transform.LookAt(new Vector3(m_T_player.position.x,transform.position.y,m_T_player.position.z));
         }
-
     }
+
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("PlayerWeapon")&& m_b_isDamaged == false)
+        if (collision.gameObject.CompareTag("PlayerWeapon"))
         {
-            m_b_isDamaged = true;
-            state = State.DAMAGED;
+                m_b_isDamaged = true;
+                m_i_hp -= 5;
+                if (m_i_hp <= 0)
+                {
+                    state = State.DIE;
+                }
+                else
+                {
+                    state = State.DAMAGED;
+                }
         }
     }
 
+    #endregion
+
+
+    //==작성 함수==========================================================================
+    #region
 
     void WayTarget()    //경로 변경 함수
     {
@@ -184,19 +186,20 @@ public class EnemyAI : MonoBehaviour
         m_N_agent.isStopped = false;
     }
 
-    void TraceTarget(Vector3 pos)   //추적 함수
+    void TraceTarget(Vector3 target)   //추적 함수
     {
         if (m_N_agent.isPathStale)
         {
             return;
         }
 
-        m_N_agent.destination = pos; //pos = 타겟의 위치
+        m_N_agent.destination = target; 
         m_N_agent.isStopped = false;
     }
 
     void Stop() //정지 함수
     {
+        m_N_agent.isStopped = true;
         m_N_agent.ResetPath();
     }
 
@@ -216,22 +219,22 @@ public class EnemyAI : MonoBehaviour
             {
                 float dist = Vector3.Distance(m_T_player.position, transform.position); //플레이어와 자신(Enemy) 사이의 거리를 계산
 
-                if (dist <= m_f_attackDistance) //플레이어가 에너미의 공격 범위 안에 들어갔을 때
+                if (dist <= m_f_attackDistance&& !m_b_isDamaged) //플레이어가 에너미의 공격 범위 안에 들어갔을 때
                 {
-                    state = State.ATTACK;   //에너미의 스탯을 공격 상태로 변경
+                    state = State.ATTACK;   //에너미의 스탯을 공격 상태로 변경                    
                 }
 
-                else if (dist <= m_f_traceDistance)   //플레이어가 에너미의 추적 범위 안에 들어왔을 때
+                else if (dist <= m_f_traceDistance&& !m_b_isDamaged)   //플레이어가 에너미의 추적 범위 안에 들어왔을 때
                 {
                     state = State.TRACE;    //에너미의 스탯을 추적 상태로 변경
                 }
 
-                else if (dist >= m_f_traceDistance && state == State.TRACE) //플레이어가 에너미의 추적 범위를 벗어나고 에너미의 스탯이 추적 상태일 때
+                else if (dist >= m_f_traceDistance && state == State.TRACE&& !m_b_isDamaged) //플레이어가 에너미의 추적 범위를 벗어나고 에너미의 스탯이 추적 상태일 때
                 {
                     state = State.WALK; //에너미가 WayPoint로 이동하도록 에너미의 스탯을 Walk로 변경
                 }
 
-                else if (m_b_isArrive)  //에너미가 목적지(WayPoint)에 도달했을 때 
+                else if (m_b_isArrive&& !m_b_isDamaged)  //에너미가 목적지(WayPoint)에 도달했을 때 
                 {
                     state = State.IDLE; //에너미의 상태를 Idle로 변경
                     m_i_nextIdx = Random.Range(0, m_L_wayPoints.Count); //wayPoint랜덤 이동을 위한 변수값에 난수 할당
@@ -239,7 +242,7 @@ public class EnemyAI : MonoBehaviour
                     m_b_isArrive = false;   //혹시 모를 버그를 위해 변수에 강제로 false 할당
                 }
 
-                else if (!m_b_isArrive && state == State.IDLE)  ////에너미가 아직 목적지(WayPoint)에 도달하지 않았고 Idle 상태일 때
+                else if (!m_b_isArrive && state == State.IDLE&& !m_b_isDamaged)  //에너미가 아직 목적지(WayPoint)에 도달하지 않았고 Idle 상태일 때
                 {
                     state = State.WALK;
                 }
@@ -273,7 +276,7 @@ public class EnemyAI : MonoBehaviour
                     m_G_AttackCollider.enabled = false;
                     disableAttackTrail();
                     Patrolling = true;
-                    m_N_agent.stoppingDistance = 0f;
+                    m_N_agent.stoppingDistance = 0.5f;
                     
                     m_A_animator.SetBool(hashTrace, false);
                     m_A_animator.SetBool(hashAttack, false);
@@ -296,46 +299,47 @@ public class EnemyAI : MonoBehaviour
                     break;
 
                 case State.ATTACK:  //ATTACK 상태일 때의 애니메이터 파라메터 조정
-                    Stop();
                     m_A_animator.SetBool(hashDamaged, false);
                     m_A_animator.SetBool(hashIdle, false);
                     m_A_animator.SetBool(hashTrace, false);
                     m_A_animator.SetBool(hashWALK, false);
                     m_A_animator.SetBool(hashAttack, true);
+                    Stop();
                     break;
 
                 case State.DAMAGED: //DAMAGED 상태일 때의 애니메이터 파라메터 조정
-                    m_A_animator.applyRootMotion = true;
                     disableAttackTrail();
                     m_A_animator.SetBool(hashIdle, false);
                     m_A_animator.SetBool(hashTrace, false);
                     m_A_animator.SetBool(hashWALK, false);
                     m_A_animator.SetBool(hashAttack, false);
-                    m_A_animator.SetTrigger(hashDamaged);
-
+                    m_A_animator.SetBool(hashDamaged,true);
                     break;
 
                 case State.DIE: //DIE 상태일 때의 애니메이터 파라메터 조정
-                    gameObject.tag = "Untagged";
                     m_b_isDie = true;
-                    Stop();
                     disableAttackTrail();
+                    Stop();
                     m_A_animator.SetTrigger(hashDie);
 
                     GetComponent<CapsuleCollider>().enabled = false;
-                    yield return new WaitForSeconds(5f);
+                    m_G_AttackCollider.enabled = false;
+                    yield return new WaitForSeconds(4f);
                     gameObject.SetActive(false);
                     break;
             }
         }
     }
 
+    #endregion
 
-    //=================================================================
-    //애니메이션 이벤트 클립에 사용할 함수들
+
+
+
+    //애니메이션 이벤트 클립에 사용할 함수들==================================================
 
     //공격 모션 시 주먹 콜라이더 활성화
-     void enableAttackCollider()
+    void enableAttackCollider()
     {
         m_G_AttackCollider.enabled = true;
     }
@@ -362,9 +366,9 @@ public class EnemyAI : MonoBehaviour
     //피격 후 스탯을 Trace로 변화
      void setStateTrace()
     {
-      //  m_A_animator.applyRootMotion = false;
         m_b_isDamaged = false;
-        state = State.WALK;
+        //transform.position += new Vector3(-1, 0, -1.46f);
+        state = State.ATTACK;
     }
 
 }

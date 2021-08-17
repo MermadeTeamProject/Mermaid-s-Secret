@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerCtrl : MonoBehaviour
 {
+    [Header("연출 관련")]
+    [SerializeField] GameObject m_G_DamageScreen;
+
+
     [Header("이동 조작 관련")]
-    // ↓  섬 이동 조작 관련
     CharacterController C_chaCtrl;
     Vector3 V3_moveDir = Vector3.zero;
     public static bool m_b_canMove = true;
@@ -18,7 +21,7 @@ public class PlayerCtrl : MonoBehaviour
     [Header("애니메이션 관련")]
     Animator A_animator;
     private bool m_b_isAttacking;
-    [SerializeField] private BoxCollider m_B_weapon;
+    [SerializeField] private CapsuleCollider m_C_weapon;
 
 
     [Header("스탯 관련")]
@@ -57,8 +60,16 @@ public class PlayerCtrl : MonoBehaviour
         Ani();
     }
 
-    
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("EnemyWeapon"))
+        {
+            C_chaCtrl.enabled = false;
+            StartCoroutine(DamageScreen());
+            transform.localPosition -= transform.forward;
+            C_chaCtrl.enabled = true;
+        }
+    }
 
     // ↓ 섬 맵 플레이어 이동 조작 함수
     void Move()
@@ -89,7 +100,7 @@ public class PlayerCtrl : MonoBehaviour
             {  //공격 모션
                 m_b_isAttacking = true;
                 A_animator.SetTrigger("Attack");
-                m_B_weapon.tag = "PlayerWeapon";
+                m_C_weapon.tag = "PlayerWeapon";
             }
             else if (!m_b_isAttacking && (h != 0 || v != 0) && Input.GetKey(KeyCode.LeftShift))
             {  //달리기 모션
@@ -116,17 +127,24 @@ public class PlayerCtrl : MonoBehaviour
     void doneAttack()
     {
         m_b_isAttacking = false;
-        m_B_weapon.tag = "Untagged";
+        m_C_weapon.tag = "Untagged";
     }
 
     void enableAttackCollider()
     {
-        m_B_weapon.enabled = true;
+        m_C_weapon.enabled = true;
     }
 
     void disableWeaponCollider()
     {
-        m_B_weapon.enabled = false;
+        m_C_weapon.enabled = false;
+    }
+
+    IEnumerator DamageScreen()
+    {
+        m_G_DamageScreen.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        m_G_DamageScreen.SetActive(false);
     }
 
 

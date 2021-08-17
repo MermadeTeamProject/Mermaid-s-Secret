@@ -53572,8 +53572,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.23333333
+  - time: 0.3
     functionName: enableAttackTrail
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.4
+    functionName: disableAttackTrail
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -53581,13 +53588,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.56666666
     functionName: disableAttackCollider
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.56666666
-    functionName: disableAttackTrail
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

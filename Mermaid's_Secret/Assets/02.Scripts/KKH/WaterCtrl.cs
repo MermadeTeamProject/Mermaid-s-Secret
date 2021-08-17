@@ -6,10 +6,10 @@ public class WaterCtrl : MonoBehaviour
 {
     public static bool isWater = false;
 
-    [SerializeField] private float waterDrag;//¹°¼Ó Áß·Â
-    private float originDrag;//¹°¹Û¿¡ ³ª¿Ã½Ã ´Ù½Ã ¿ø·¡ Áß·Â´ë·Î 
-    [SerializeField] private Color waterColor;//¹°¼Ó »ö±ò
-    [SerializeField] private float waterFogDensity;//¹° Å¹ÇÔ Á¤µµ
+    [SerializeField] private float waterDrag;//ï¿½ï¿½ï¿½ï¿½ ï¿½ß·ï¿½
+    private float originDrag;//ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½Ã½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß·Â´ï¿½ï¿½ 
+    [SerializeField] private Color waterColor;//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private float waterFogDensity;//ï¿½ï¿½ Å¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     private Color originColor;
     private float originFogDensity;
